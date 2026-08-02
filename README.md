@@ -24,9 +24,10 @@ a larger 11" rig in planning.
 
 ## Images
 
-**M42 - The Orion Nebula**
+Click any thumbnail for the full-resolution image.
 
-![M42, the Orion Nebula](images/m42-orion-nebula.jpg)
+<a href="images/m42-orion-nebula.jpg"><img src="images/thumbs/m42-orion-nebula.jpg" alt="M42, the Orion Nebula" width="220"></a>
+<a href="images/ic434-horsehead-nebula.jpg"><img src="images/thumbs/ic434-horsehead-nebula.jpg" alt="IC 434, the Horsehead Nebula region" width="220"></a>
 
 More to come - the NINA automation writeup above covers a real bug hunt that just got fixed
 (2026-08), so the setup is only now producing properly-focused, properly-centered subs
