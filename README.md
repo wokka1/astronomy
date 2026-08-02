@@ -24,6 +24,10 @@ a larger 11" rig in planning.
 
 ## Images
 
-Nothing posted yet - the NINA automation writeup above covers a real bug hunt that just got
-fixed (2026-08), so the setup is only now producing properly-focused, properly-centered
-subs worth sharing. Will post examples here once there's a clean stack to show.
+**M42 - The Orion Nebula**
+
+![M42, the Orion Nebula](images/m42-orion-nebula.jpg)
+
+More to come - the NINA automation writeup above covers a real bug hunt that just got fixed
+(2026-08), so the setup is only now producing properly-focused, properly-centered subs
+worth sharing.
