@@ -43,6 +43,17 @@
     How often the scheduled task should run, in minutes. Only used with
     -InstallTask. Defaults to 15.
 
+.PARAMETER FixGuestAuth
+    One-time machine fix (not a per-run option) for the most common
+    reason this script can't reach a Seestar's share: Windows disables
+    "insecure guest logons" by default, which is exactly what a Seestar's
+    anonymous SMB share looks like. Requires an elevated (Run as
+    Administrator) PowerShell session, and a reboot afterward. Safe to
+    run and re-run - it's a no-op if already enabled. See the README's
+    troubleshooting section (and Starfront Observatories' own writeup on
+    this exact problem) for the manual alternative if you'd rather not
+    grant this script Administrator rights.
+
 .EXAMPLE
     .\seestar-sync.ps1
     First run: prompts for the Seestar IP and a destination folder, saves
@@ -57,6 +68,12 @@
     .\seestar-sync.ps1 -Reconfigure
     Re-prompts for the Seestar IP and destination even though a config
     file already exists (e.g. after the Seestar got a new DHCP address).
+
+.EXAMPLE
+    .\seestar-sync.ps1 -FixGuestAuth
+    Run once, as Administrator, if the sync fails to reach the Seestar's
+    share at all. Enables insecure guest logons machine-wide, then exits
+    - reboot, then run the script normally.
 #>
 
 [CmdletBinding()]
@@ -65,7 +82,8 @@ param(
     [switch]$Reconfigure,
     [string]$ShareName = "EMMC Images",
     [switch]$InstallTask,
-    [int]$TaskIntervalMinutes = 15
+    [int]$TaskIntervalMinutes = 15,
+    [switch]$FixGuestAuth
 )
 
 $ErrorActionPreference = "Stop"
@@ -126,13 +144,11 @@ function Invoke-SeestarSync {
     # exactly what a Seestar's anonymous/guest-only share looks like from
     # Windows' perspective. If Test-Path below fails with an
     # "unsecure/insecure" or "you can't connect" message, that's almost
-    # certainly it - fix on the Windows PC (not the Seestar) via:
-    #   Computer Config > Admin Templates > Network > Lanman Workstation
-    #   > Enable insecure guest logons  (gpedit.msc), or the equivalent
-    #   registry value AllowInsecureGuestAuth under
-    #   HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters
+    # certainly it - run this script once with -FixGuestAuth (as
+    # Administrator), reboot, then try again. See the README for the
+    # manual gpedit.msc/registry steps if you'd rather do it by hand.
     if (-not (Test-Path $source)) {
-        Write-Error "Can't reach $source - check the Seestar is powered on, on the same VPN/LAN, and that ShareName ('$($Config.ShareName)') is correct. See the comment above this check for the most common Windows-side cause (insecure guest logons disabled)."
+        Write-Error "Can't reach $source - check the Seestar is powered on, on the same VPN/LAN, and that ShareName ('$($Config.ShareName)') is correct. If it's otherwise reachable, this is almost certainly Windows blocking insecure guest logons - see -FixGuestAuth or the README's troubleshooting section."
         return $false
     }
 
@@ -176,6 +192,45 @@ function Invoke-SeestarSync {
     }
 
     Write-Host "Sync complete (Robocopy exit code $exitCode - run 'robocopy /?' for what that means). Log: $LogFile" -ForegroundColor Green
+    return $true
+}
+
+function Enable-InsecureGuestAuth {
+    <#
+        Fixes the most common reason this script can't reach a Seestar's
+        share at all: Windows has disabled "insecure guest logons" by
+        default since the Windows 10 1709 / Server 2019 era, and a
+        Seestar's anonymous SMB share looks exactly like what that block
+        targets. Starfront Observatories has their own writeup of this
+        same problem (see README) - this does the same registry edit
+        their Group Policy / regedit steps describe, just scripted.
+
+        Editing the registry value directly (rather than shelling out to
+        gpedit.msc) means this works identically on Windows 10 Pro,
+        Windows 11, AND Home editions - Home doesn't ship gpedit.msc, but
+        the underlying registry value it would have written is the same
+        one set here, so there's no edition restriction on this approach.
+    #>
+    $path = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters"
+    $name = "AllowInsecureGuestAuth"
+
+    $isAdmin = ([Security.Principal.WindowsPrincipal] `
+        [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+            [Security.Principal.WindowsBuiltInRole]::Administrator)
+    if (-not $isAdmin) {
+        Write-Error "-FixGuestAuth needs an elevated PowerShell session (Run as Administrator) - it edits a machine-wide HKLM registry value."
+        return $false
+    }
+
+    $current = Get-ItemProperty -Path $path -Name $name -ErrorAction SilentlyContinue
+    if ($current -and $current.$name -eq 1) {
+        Write-Host "Insecure guest logons are already enabled on this PC - nothing to change." -ForegroundColor Green
+        return $true
+    }
+
+    Set-ItemProperty -Path $path -Name $name -Value 1 -Type DWord
+    Write-Host "Set $name = 1 under $path." -ForegroundColor Green
+    Write-Host "This needs a reboot to take effect (or at minimum: Restart-Service LanmanWorkstation -Force). Reboot, then re-run this script normally." -ForegroundColor Yellow
     return $true
 }
 
@@ -226,6 +281,12 @@ function Install-SyncScheduledTask {
 }
 
 # --- main --------------------------------------------------------------
+
+if ($FixGuestAuth) {
+    # One-time machine fix, not a sync run - stop here either way so the
+    # exit code cleanly reflects whether the fix itself succeeded.
+    if (Enable-InsecureGuestAuth) { exit 0 } else { exit 1 }
+}
 
 $config = Read-OrCreateConfig
 $syncOk = Invoke-SeestarSync -Config $config

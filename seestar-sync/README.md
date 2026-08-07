@@ -94,17 +94,36 @@ it or reach it over the VPN, this is almost always a Windows setting, not
 a Seestar problem: Windows has disabled **insecure guest logons** by
 default since around the Windows 10 1709 / Server 2019 era, which is
 exactly what a Seestar's anonymous SMB share looks like from Windows'
-side.
+side. Starfront Observatories has their own writeup of this exact issue:
+[Remote Mounting Seestar Internal Storage (Windows Edition)](https://starfront.zendesk.com/hc/en-us/articles/51136311376148-Remote-Mounting-Seestar-Internal-Storage-Windows-Edition).
 
-Fix it on the Windows PC:
+Easiest fix - let the script do it:
 
-- **Group Policy** (`gpedit.msc`): Computer Configuration → Administrative
-  Templates → Network → Lanman Workstation → **Enable insecure guest
-  logons** → set to Enabled.
-- **Registry** (if `gpedit.msc` isn't available, e.g. Home editions):
+```powershell
+# Run PowerShell as Administrator first
+.\seestar-sync.ps1 -FixGuestAuth
+```
+
+This sets the same registry value the manual steps below set, works on
+Windows 10 Pro and Windows 11 alike (it edits the registry directly
+rather than going through Group Policy, so it isn't gated to any
+particular edition), and is a no-op if it's already enabled. It needs a
+reboot afterward to take effect.
+
+Or do it by hand:
+
+- **Group Policy** (`gpedit.msc`, Pro/Enterprise only): Computer
+  Configuration → Administrative Templates → Network → Lanman Workstation
+  → **Enable insecure guest logons** → set to Enabled.
+- **Registry / Command Prompt** (works on every edition, including Home):
   set `AllowInsecureGuestAuth` to `1` (DWORD) under
   `HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters`,
-  then reboot.
+  then reboot. From an elevated Command Prompt:
+  ```
+  reg add HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters /v AllowInsecureGuestAuth /t REG_DWORD /d 1 /f
+  ```
+
+After any of these, reboot, then reconnect/remap and re-run the script.
 
 If the share name itself is wrong (some firmware versions may differ from
 the default), pass `-ShareName` with whatever name you see when you
