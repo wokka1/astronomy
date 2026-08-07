@@ -45,6 +45,23 @@ git clone https://github.com/wokka1/astronomy.git
 cd astronomy\seestar-sync
 ```
 
+That pulls the whole repo (including the images elsewhere in it). To get
+just this folder instead, use a sparse checkout (git 2.36+):
+
+```powershell
+git clone --filter=blob:none --sparse https://github.com/wokka1/astronomy.git
+cd astronomy
+git sparse-checkout set seestar-sync
+```
+
+This still fetches the repo's commit history, but `--filter=blob:none`
+skips downloading file contents up front (they're fetched on demand as
+you check them out), and `sparse-checkout set` limits your working
+folder to just `seestar-sync\` - the rest of the repo won't show up on
+disk at all. Not worth the extra steps for a one-time download (Option 1
+above is simpler for that); mainly useful if you're going to `git pull`
+this repo repeatedly to pick up script updates.
+
 ## Requirements
 
 - Windows 10/11 (or Server 2016+) - `robocopy` and the `ScheduledTasks`
