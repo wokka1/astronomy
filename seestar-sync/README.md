@@ -1,7 +1,7 @@
 # Seestar Sync
 
 A small PowerShell script that copies new/changed image files off a Seestar
-(S30/S50/S60) onto a local Windows drive, over the Seestar's built-in guest
+(S30/S50) onto a local Windows drive, over the Seestar's built-in guest
 SMB share - useful if your Seestar sits on a remote network (an observatory,
 a VPN-connected site, etc.) and you want a running local copy of everything
 it captures without manually pulling files off it.
