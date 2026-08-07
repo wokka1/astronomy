@@ -96,19 +96,48 @@ address), run:
 .\seestar-sync.ps1 -Reconfigure
 ```
 
+Since first runs are usually done interactively, add `-Verbose` to see
+Robocopy's live per-file progress (filenames and % as they copy) instead
+of just a one-line summary at the end:
+
+```powershell
+.\seestar-sync.ps1 -Verbose
+```
+
+Scheduled runs (below) leave `-Verbose` off automatically, so the log
+stays short once this is running unattended.
+
 ## Scheduling it
 
-To have Windows run this automatically in the background:
+To have Windows run this automatically in the background, once a day:
+
+```powershell
+.\seestar-sync.ps1 -InstallTask
+```
+
+This registers a Scheduled Task named **SeestarSync** under your current
+user account - no Administrator prompt needed - that runs once a day at
+**9:00 AM local time** by default. Running this again later updates the
+existing task instead of creating a duplicate.
+
+**To run at a different time of day**, pass `-TaskTime`:
+
+```powershell
+.\seestar-sync.ps1 -InstallTask -TaskTime "22:30"
+```
+
+This is always your PC's own local time - Task Scheduler triggers run on
+whatever time zone the PC itself is set to, so just pick the wall-clock
+time you want it to run; there's no time zone math to do even if the
+Seestar or the person setting this up is somewhere else.
+
+**To run more often than once a day**, pass `-TaskIntervalMinutes`
+instead - this switches the task to repeat every N minutes, all day,
+instead of the once-daily default:
 
 ```powershell
 .\seestar-sync.ps1 -InstallTask -TaskIntervalMinutes 15
 ```
-
-This registers a Scheduled Task named **SeestarSync** that re-runs the
-script every 15 minutes (adjust with `-TaskIntervalMinutes`), under your
-current user account - no Administrator prompt needed. Running this again
-later (e.g. with a different interval) updates the existing task instead
-of creating a duplicate.
 
 You can check on it any time with:
 

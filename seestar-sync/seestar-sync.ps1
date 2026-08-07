@@ -18,6 +18,12 @@
     Pass -InstallTask to also register this script as a repeating Windows
     Scheduled Task, so it runs on its own without you remembering to.
 
+    Pass the standard PowerShell -Verbose switch (built in via
+    [CmdletBinding()] below - no custom parameter needed for it) to see
+    Robocopy's live per-file progress and filenames as they copy. Without
+    it, output stays quiet - just a one-line summary per run - which is
+    what you want once this is running unattended on a schedule.
+
 .PARAMETER ConfigPath
     Where to read/write the JSON config. Defaults to a file next to this
     script, so the whole thing stays portable if you move the folder.
@@ -34,14 +40,29 @@
     different (check by browsing \\<seestar-ip>\ in File Explorer first).
 
 .PARAMETER InstallTask
-    Registers this script as a Windows Scheduled Task that re-runs every
-    -TaskIntervalMinutes, under the current user account, without needing
-    Administrator rights. Safe to run more than once - it replaces the
-    existing task rather than creating a duplicate.
+    Registers this script as a Windows Scheduled Task, under the current
+    user account, without needing Administrator rights. Safe to run more
+    than once - it replaces the existing task rather than creating a
+    duplicate. By default this schedules one run per day at -TaskTime;
+    pass -TaskIntervalMinutes instead if you want it to run more often
+    than once a day.
+
+.PARAMETER TaskTime
+    What local time of day the scheduled task should run at, when using
+    the (default) once-a-day schedule. Accepts anything PowerShell can
+    parse as a time, e.g. "09:00", "9:00 AM", "21:30". Defaults to
+    "09:00". This is always the Windows PC's own local time and its own
+    time zone - Task Scheduler has no concept of a different time zone,
+    so there's no manual conversion to do even if the Seestar or the
+    person who set this up is elsewhere. Ignored if -TaskIntervalMinutes
+    is also given.
 
 .PARAMETER TaskIntervalMinutes
-    How often the scheduled task should run, in minutes. Only used with
-    -InstallTask. Defaults to 15.
+    Switches the scheduled task from "once daily at -TaskTime" to
+    "repeat every N minutes, all day" instead. Only used with
+    -InstallTask. Not set by default - pass this explicitly if you want
+    more frequent syncing (e.g. -TaskIntervalMinutes 15 for every 15
+    minutes) rather than the once-a-day default.
 
 .PARAMETER FixGuestAuth
     One-time machine fix (not a per-run option) for the most common
@@ -60,9 +81,24 @@
     them, then does one sync pass.
 
 .EXAMPLE
-    .\seestar-sync.ps1 -InstallTask -TaskIntervalMinutes 30
+    .\seestar-sync.ps1 -InstallTask
     Runs a sync pass now, and also registers/updates a scheduled task that
-    repeats every 30 minutes from here on.
+    runs once a day at the default time (9:00 AM local).
+
+.EXAMPLE
+    .\seestar-sync.ps1 -InstallTask -TaskTime "22:30"
+    Same, but scheduled for 10:30 PM local time instead of the 9:00 AM
+    default.
+
+.EXAMPLE
+    .\seestar-sync.ps1 -InstallTask -TaskIntervalMinutes 15
+    Runs a sync pass now, and registers a scheduled task that repeats
+    every 15 minutes all day instead of once daily.
+
+.EXAMPLE
+    .\seestar-sync.ps1 -Verbose
+    Runs one sync pass interactively, showing Robocopy's live per-file
+    progress instead of just a one-line summary.
 
 .EXAMPLE
     .\seestar-sync.ps1 -Reconfigure
@@ -82,7 +118,8 @@ param(
     [switch]$Reconfigure,
     [string]$ShareName = "EMMC Images",
     [switch]$InstallTask,
-    [int]$TaskIntervalMinutes = 15,
+    [string]$TaskTime = "09:00",
+    [int]$TaskIntervalMinutes,
     [switch]$FixGuestAuth
 )
 
@@ -158,8 +195,6 @@ function Invoke-SeestarSync {
     # /R:2   /W:5 - only retry twice, 5s apart, instead of Robocopy's very
     #          patient defaults (1 million retries) - a flaky VPN hop
     #          shouldn't hang the scheduled task for hours
-    # /NP    - don't print per-file percentage-copied noise
-    # /NFL /NDL - don't list every single file/dir name (still logs summary)
     # /LOG+: - append to our timestamped log instead of overwriting it
     # /TEE   - also mirror log output to the console
     #
@@ -170,9 +205,19 @@ function Invoke-SeestarSync {
     # adds files - it never deletes on either side.
     $robocopyArgs = @(
         $source, $Config.Destination,
-        "/E", "/R:2", "/W:5", "/NP", "/NFL", "/NDL",
+        "/E", "/R:2", "/W:5",
         "/LOG+:$LogFile", "/TEE"
     )
+
+    # -Verbose is PowerShell's own built-in common parameter (we get it
+    # for free from [CmdletBinding()] up top) - when it's NOT passed, add
+    # /NP (no per-file %), /NFL, /NDL (no per-file/dir names) so scheduled
+    # runs produce a short, quiet log instead of one line per file. Pass
+    # -Verbose to this script interactively to see live progress instead.
+    if ($VerbosePreference -ne 'Continue') {
+        $robocopyArgs += @("/NP", "/NFL", "/NDL")
+    }
+
     robocopy @robocopyArgs
 
     # Robocopy is one of the few Windows tools where a non-zero exit code
@@ -235,7 +280,13 @@ function Enable-InsecureGuestAuth {
 }
 
 function Install-SyncScheduledTask {
-    param([int]$IntervalMinutes)
+    param(
+        [string]$TaskTime,
+        # $null (the default - see the "main" section below for how that
+        # gets decided) means "use the once-daily -TaskTime schedule
+        # instead of a repeating-every-N-minutes one."
+        [Nullable[int]]$IntervalMinutes
+    )
 
     # Windows Task Scheduler is fully scriptable from PowerShell via the
     # built-in ScheduledTasks module (no extra install needed on any
@@ -251,9 +302,21 @@ function Install-SyncScheduledTask {
         -Execute "powershell.exe" `
         -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -ConfigPath `"$ConfigPath`""
 
-    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) `
-        -RepetitionInterval (New-TimeSpan -Minutes $IntervalMinutes) `
-        -RepetitionDuration ([TimeSpan]::MaxValue)
+    if ($IntervalMinutes) {
+        # Repeat every N minutes, all day, forever.
+        $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) `
+            -RepetitionInterval (New-TimeSpan -Minutes $IntervalMinutes) `
+            -RepetitionDuration ([TimeSpan]::MaxValue)
+        $scheduleDescription = "every $IntervalMinutes minute(s)"
+    } else {
+        # Once a day at $TaskTime. Task Scheduler triggers always fire in
+        # the local system clock/time zone of the PC running them, so
+        # there's no UTC or "what time zone is the Seestar in" math to
+        # do here - whatever local time you want it to run, that's what
+        # you pass. -At parses common time formats ("09:00", "9:00 AM").
+        $trigger = New-ScheduledTaskTrigger -Daily -At (Get-Date $TaskTime)
+        $scheduleDescription = "once daily at $TaskTime (this PC's local time)"
+    }
 
     # Limited run-level = runs as the current user, only while they're
     # logged on, and does NOT require an Administrator prompt to register.
@@ -270,7 +333,7 @@ function Install-SyncScheduledTask {
     } else {
         Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger `
             -Settings $settings -Description "Syncs new Seestar files to a local folder (seestar-sync.ps1)" | Out-Null
-        Write-Host "Registered scheduled task '$taskName', repeating every $IntervalMinutes minute(s)." -ForegroundColor Green
+        Write-Host "Registered scheduled task '$taskName', running $scheduleDescription." -ForegroundColor Green
     }
 
     # Confirm what actually got registered - useful for the "can you query
@@ -292,7 +355,13 @@ $config = Read-OrCreateConfig
 $syncOk = Invoke-SeestarSync -Config $config
 
 if ($InstallTask) {
-    Install-SyncScheduledTask -IntervalMinutes $TaskIntervalMinutes
+    # Only treat -TaskIntervalMinutes as "in use" if it was actually
+    # passed - its bare default (0, from the [int] type) would otherwise
+    # be indistinguishable from someone explicitly asking for "every 0
+    # minutes." $PSBoundParameters is how you tell "not given" apart from
+    # "given, and happens to be a falsy value" in PowerShell.
+    $interval = if ($PSBoundParameters.ContainsKey('TaskIntervalMinutes')) { $TaskIntervalMinutes } else { $null }
+    Install-SyncScheduledTask -TaskTime $TaskTime -IntervalMinutes $interval
 }
 
 if (-not $syncOk) {
