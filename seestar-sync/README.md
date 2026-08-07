@@ -21,17 +21,19 @@ $installPath = "$env:USERPROFILE\SeestarSync"   # change this to install somewhe
 New-Item -ItemType Directory -Path $installPath -Force | Out-Null
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wokka1/astronomy/main/seestar-sync/seestar-sync.ps1" -OutFile "$installPath\seestar-sync.ps1"
 Unblock-File "$installPath\seestar-sync.ps1"
+Set-Location $installPath
 ```
 
 Paste that into a PowerShell window - it creates a `SeestarSync` folder in
-your user profile and downloads the script into it. Edit the
-`$installPath` line first if you'd rather it go somewhere else (a data
-drive, an existing tools folder, etc.) - the rest of the block doesn't
-need to change since it all reads from that one variable. The
-`Unblock-File` line matters regardless of where you put it: Windows tags
-anything downloaded from the internet with a "Mark of the Web," which
-otherwise triggers a security warning (or an outright block) the first
-time you try to run it.
+your user profile, downloads the script into it, and leaves you sitting
+in that folder so you can go straight into [First run](#first-run) below
+without a manual `cd`. Edit the `$installPath` line first if you'd
+rather it go somewhere else (a data drive, an existing tools folder,
+etc.) - the rest of the block doesn't need to change since it all reads
+from that one variable. The `Unblock-File` line matters regardless of
+where you put it: Windows tags anything downloaded from the internet
+with a "Mark of the Web," which otherwise triggers a security warning
+(or an outright block) the first time you try to run it.
 
 **Option 2 - download from GitHub's website:**
 
