@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Copies new/changed image files off a Seestar (S30/S50/S60) onto a local
+    Copies new/changed image files off a Seestar (S30/S50) onto a local
     Windows drive, over the Seestar's built-in guest SMB share.
 
 .DESCRIPTION
