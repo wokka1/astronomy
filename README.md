@@ -14,6 +14,9 @@ a larger 11" rig in planning.
 - **[C11 EdgeHD imaging train spec sheet](scope_specs.md)** - full parts list and backfocus
   stack for a second, larger rig (Celestron EdgeHD 11" on a ZWO AM7 mount) currently being
   planned as a permanent remote setup.
+- **[Seestar Sync](seestar-sync/)** - a PowerShell script that copies new/changed files off a
+  Seestar onto a local Windows drive over its guest SMB share, with optional Task Scheduler
+  integration for running it automatically. Handy if your Seestar sits on a remote network.
 
 ## Related repos
 
