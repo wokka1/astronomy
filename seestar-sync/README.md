@@ -11,6 +11,40 @@ which only copies files that are new or have changed since the last run -
 so this is safe to run on a schedule and it'll never re-copy or delete
 anything.
 
+## Getting the script
+
+**Option 1 - one PowerShell command (easiest, no GitHub/git knowledge needed):**
+
+```powershell
+New-Item -ItemType Directory -Path "$env:USERPROFILE\SeestarSync" -Force | Out-Null
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wokka1/astronomy/main/seestar-sync/seestar-sync.ps1" -OutFile "$env:USERPROFILE\SeestarSync\seestar-sync.ps1"
+Unblock-File "$env:USERPROFILE\SeestarSync\seestar-sync.ps1"
+```
+
+Paste that into a PowerShell window - it creates a `SeestarSync` folder in
+your user profile and downloads the script into it. The `Unblock-File`
+line matters: Windows tags anything downloaded from the internet with a
+"Mark of the Web," which otherwise triggers a security warning (or an
+outright block) the first time you try to run it.
+
+**Option 2 - download from GitHub's website:**
+
+1. Go to [github.com/wokka1/astronomy/tree/main/seestar-sync](https://github.com/wokka1/astronomy/tree/main/seestar-sync)
+2. Click `seestar-sync.ps1`, then click the **Download raw file** button
+   (top-right of the file view).
+3. Save it into whatever folder you want to run it from.
+4. Right-click the downloaded file → **Properties** → if there's an
+   **Unblock** checkbox near the bottom, check it and click OK (same
+   "Mark of the Web" issue as above, just fixed through Explorer instead
+   of `Unblock-File`).
+
+**Option 3 - if you already use git:**
+
+```powershell
+git clone https://github.com/wokka1/astronomy.git
+cd astronomy\seestar-sync
+```
+
 ## Requirements
 
 - Windows 10/11 (or Server 2016+) - `robocopy` and the `ScheduledTasks`
@@ -23,10 +57,27 @@ anything.
 
 ## First run
 
-Open PowerShell and run:
+Open PowerShell, `cd` into the folder you downloaded the script into, and run:
 
 ```powershell
 .\seestar-sync.ps1
+```
+
+If you get an error about the script being blocked because "running
+scripts is disabled on this system," that's PowerShell's execution
+policy (a separate protection from the Mark-of-the-Web one above) - it
+defaults to fairly strict on most Windows installs. Either run it once
+this way instead:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File .\seestar-sync.ps1
+```
+
+or allow locally-created scripts to run going forward for your user
+account:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
 You'll be prompted for two things:
