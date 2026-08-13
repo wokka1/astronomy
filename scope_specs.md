@@ -55,17 +55,18 @@ Full parts list and backfocus stack for the second-scope build, for the observat
 
 Target: **146.05mm ± 0.5mm** from the C11's rear SC thread to the sensor plane (Celestron EdgeHD spec). Tolerance window: 145.55–146.55mm.
 
+Order below is physical assembly sequence, OTA to sensor - not sorted by size.
+
 | Component | mm |
 |---|---:|
+| 3.3" SC thread adapter (mates OTA's native SC thread to ESATTO) | 2.0 |
 | ESATTO 2" (standard) | 67.0 |
-| 3.3" SC thread adapter | 2.0 |
 | M56 → M54 adapter | 4.0 |
 | ZWO EFW 2" (7-position) | 20.0 |
 | ZWO OAG-L | 17.5 |
-| ASI6200MM Pro (bare) | 17.5 |
-| **Stack subtotal** | **128.0** |
 | ZWO CAA rotator | 16.5 |
 | Baader fine-adjustment rings (1.0 + 0.5mm) | 1.5 |
+| ASI6200MM Pro (bare) | 17.5 |
 | **Total** | **146.0** |
 
 Lands dead center of the 145.55–146.55mm tolerance window. The CAA rotator (added 2026-07-30 for OAG guide-star acquisition) replaces the Baader 15mm extension originally planned - only 1.5mm of fine rings needed on top of it instead of 3.0mm, same final total. Four spare rings (two 0.3mm, one each of the unused 1.0/0.5mm) left over for fine trim once the physical stack is on hand. Full-frame note: EdgeHD's corrected flat field is ⌀42mm; the ASI6200's sensor diagonal is 43mm — right at the edge of the corrected circle, expect slight corner softening.
