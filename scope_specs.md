@@ -69,7 +69,7 @@ Order below is physical assembly sequence, OTA to sensor - not sorted by size.
 | ASI6200MM Pro (bare) | 17.5 |
 | **Total** | **146.0** |
 
-Lands dead center of the 145.55–146.55mm tolerance window. The CAA rotator (added 2026-07-30 for OAG guide-star acquisition) replaces the Baader 15mm extension originally planned - only 1.5mm of fine rings needed on top of it instead of 3.0mm, same final total. Four spare rings (two 0.3mm, one each of the unused 1.0/0.5mm) left over for fine trim once the physical stack is on hand. Full-frame note: EdgeHD's corrected flat field is ⌀42mm; the ASI6200's sensor diagonal is 43mm — right at the edge of the corrected circle, expect slight corner softening.
+Lands dead center of the 145.55–146.55mm tolerance window. The CAA rotator (added 2026-07-30 for camera framing) replaces the Baader 15mm extension originally planned - only 1.5mm of fine rings needed on top of it instead of 3.0mm, same final total. Four spare rings (two 0.3mm, one each of the unused 1.0/0.5mm) left over for fine trim once the physical stack is on hand. Full-frame note: EdgeHD's corrected flat field is ⌀42mm; the ASI6200's sensor diagonal is 43mm — right at the edge of the corrected circle, expect slight corner softening.
 
 ## 2. Optical Tube
 
@@ -124,7 +124,7 @@ ESATTO 2" → 3.3" SC thread, 2mm thick. Large-thread variant for 11"/14" EdgeHD
 4mm thick. Mates ESATTO's native M56 output to the EFW's M54 input.
 
 #### ZWO CAA Camera Angle Adjuster (rotator)
-Motorized field rotator, added 2026-07-30 - flagged by the observatory's equipment checklist for OAG guide-star acquisition (lets the whole camera+OAG assembly rotate to find a usable guide star at any framing). M54 both sides (M48 adapter included), 16.5mm thick, 465g, rated for up to 11lb of downstream camera+accessories (this train's EFW+OAG+camera is ~1.5kg/3.3lb - comfortable margin). USB-C control, 0.02°/step.
+Motorized field rotator, added 2026-07-30 for camera framing - sits downstream of the OAG (see [Section 1](#1-backfocus-stack-telescope-thread-to-sensor)), so it rotates the main camera's framing independently of the guide setup. Guide-star positioning is handled separately, by the OAG-L's own adjustable pickoff prism. M54 both sides (M48 adapter included), 16.5mm thick, 465g, rated for up to 11lb of downstream camera+accessories (this train's EFW+OAG+camera is ~1.5kg/3.3lb - comfortable margin). USB-C control, 0.02°/step.
 
 #### M54 Backfocus Spacer Set (Baader)
 Two sets of Baader M54 fine-adjustment rings (0.3/0.5/1.0mm aluminium, six rings total) - **only 1.5mm needed now** (one 1.0mm + one 0.5mm ring) since the CAA rotator above replaces the originally-planned 15mm Baader extension tube in the stack. See [Section 1](#1-backfocus-stack-telescope-thread-to-sensor) for the full math.
