@@ -62,8 +62,8 @@ Order below is physical assembly sequence, OTA to sensor - not sorted by size.
 | 3.3" SC thread adapter (mates OTA's native SC thread to ESATTO) | 2.0 |
 | ESATTO 2" (standard) | 67.0 |
 | M56 → M54 adapter | 4.0 |
-| ZWO EFW 2" (7-position) | 20.0 |
 | ZWO OAG-L | 17.5 |
+| ZWO EFW 2" (7-position) | 20.0 |
 | ZWO CAA rotator | 16.5 |
 | Baader fine-adjustment rings (1.0 + 0.5mm) | 1.5 |
 | ASI6200MM Pro (bare) | 17.5 |
