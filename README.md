@@ -20,10 +20,11 @@ a larger 11" rig in planning.
 
 ## Related repos
 
-- **[seestar_battery_monitor](https://github.com/wokka1/seestar_battery_monitor)** - reads
+- **[seestar_status_monitor](https://github.com/wokka1/seestar_status_monitor)** - reads
   the Seestar S50's battery/power telemetry over its own native protocol (separate from the
-  ASCOM/Alpaca layer NINA talks to, which has no battery data at all). Runs alongside the
-  NINA automation above, on the same remote setup.
+  ASCOM/Alpaca layer NINA talks to, which has no battery data at all), plus overnight imaging
+  session stats (dropped-frame counts). Runs alongside the NINA automation above, on the same
+  remote setup.
 
 ## Images
 
