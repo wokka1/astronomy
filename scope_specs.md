@@ -1,6 +1,6 @@
 # C11 EdgeHD Imaging Train — Observatory Spec Sheet
 
-*Rev. 2026-07-30 — Full order placed. No pricing shown — physical specs and dimensions only.*
+*Rev. 2026-10-28 — OAG removed; AT72ED guide scope with ZWO EAF-N added. No pricing shown — physical specs and dimensions only.*
 
 Full parts list and backfocus stack for the second-scope build, for the observatory team to check against the pier, mount envelope, and cable routing.
 
@@ -11,37 +11,42 @@ Full parts list and backfocus stack for the second-scope build, for the observat
 | Aperture | 11" (279mm) |
 | Focal Length | 2800mm · f/10 |
 | Required Backfocus | 146.05mm ± 0.5mm |
-| Est. Resting Load on AM7 | ~23kg |
+| Guiding | Astro-Tech AT72ED guide scope (72mm f/6) with ZWO EAF-N focuser + ASI220MM |
+| Est. Resting Load on AM7 | ~23kg before the guide scope (see [open items](#open-items-for-the-observatory)) |
 
 ## Full Parts Index
 
 **Optical Tube**
 - [Celestron EdgeHD 11" OTA (91050-XLT)](#celestron-edgehd-11-ota-91050-xlt)
+- [Astro-Tech AT72ED Guide Scope](#astro-tech-at72ed-guide-scope)
 
 **Mount**
 - [ZWO AM7 Harmonic Drive EQ Head](#zwo-am7-harmonic-drive-eq-head)
 - [Sky-Watcher AZ-EQ6 Counterweight, 11lb](#sky-watcher-az-eq6-counterweight-11lb)
 - [Custom Pier Top Plate and Pier](#custom-pier-top-plate-and-pier)
 - [William Optics Mini Vixen Mounting Base](#william-optics-mini-vixen-mounting-base)
+- [ADM V-Series Dovetail Bars](#adm-v-series-dovetail-bars)
 
 **Focuser & Adapters**
 - [PrimaLuceLab ESATTO 2" Standard Focuser](#primalucelab-esatto-2-standard-focuser)
 - [ESATTO to Large SC Thread Adapter](#esatto-to-large-sc-thread-adapter)
 - [M56 to M54 Adapter with Stop Ring](#m56-to-m54-adapter-with-stop-ring)
 - [ZWO CAA Camera Angle Adjuster (rotator)](#zwo-caa-camera-angle-adjuster-rotator)
+- [Baader M54 Extension Tube, 15mm](#baader-m54-extension-tube-15mm)
 - [M54 Backfocus Spacer Set (Baader)](#m54-backfocus-spacer-set-baader)
 
 **Camera, Filters & Guiding**
 - [ZWO ASI6200MM Pro](#zwo-asi6200mm-pro)
 - [ZWO EFW 2" 7-Position Filter Wheel](#zwo-efw-2-7-position-filter-wheel)
 - [Antlia 3nm Narrowband and LRGB Filter Set](#antlia-3nm-narrowband-and-lrgb-filter-set)
-- [ZWO OAG-L Off-Axis Guider](#zwo-oag-l-off-axis-guider)
 - [ZWO ASI220MM Mini Guide Camera](#zwo-asi220mm-mini-guide-camera)
+- [ZWO EAF-N Electronic Automatic Focuser](#zwo-eaf-n-electronic-automatic-focuser)
 - [ZWO 12V 5A AC/DC Adapter (x2)](#zwo-12v-5a-acdc-adapter-x2)
 
 **Automation & Power**
 - [Pegasus Pocket Powerbox Micro](#pegasus-pocket-powerbox-micro)
 - [Pegasus 12V 10A Power Supply](#pegasus-12v-10a-power-supply)
+- [Powerbox Mounting Hardware (Baader finder base, Pegasus shoe)](#powerbox-mounting-hardware-baader-finder-base-pegasus-shoe)
 - [Deep Sky Dad C11 Aluminium Dewshield and OFP2 Flat Panel](#deep-sky-dad-c11-aluminium-dewshield-and-ofp2-flat-panel)
 - [Celestron 11 Inch Dew Heater Ring](#celestron-11-inch-dew-heater-ring)
 - [TEMP-est Active Cooling Fan System](#temp-est-active-cooling-fan-system)
@@ -62,14 +67,14 @@ Order below is physical assembly sequence, OTA to sensor - not sorted by size.
 | 3.3" SC thread adapter (mates OTA's native SC thread to ESATTO) | 2.0 |
 | ESATTO 2" (standard) | 67.0 |
 | M56 → M54 adapter | 4.0 |
-| ZWO OAG-L | 17.5 |
+| Baader M54 extension tube (takes the place of the removed OAG-L) | 15.0 |
 | ZWO EFW 2" (7-position) | 20.0 |
 | ZWO CAA rotator | 16.5 |
-| Baader fine-adjustment rings (1.0 + 0.5mm) | 1.5 |
+| Baader fine-adjustment rings (3 × 1.0 + 2 × 0.5mm) | 4.0 |
 | ASI6200MM Pro (bare) | 17.5 |
 | **Total** | **146.0** |
 
-Lands dead center of the 145.55–146.55mm tolerance window. The CAA rotator (added 2026-07-30 for camera framing) replaces the Baader 15mm extension originally planned - only 1.5mm of fine rings needed on top of it instead of 3.0mm, same final total. Four spare rings (two 0.3mm, one each of the unused 1.0/0.5mm) left over for fine trim once the physical stack is on hand. Full-frame note: EdgeHD's corrected flat field is ⌀42mm; the ASI6200's sensor diagonal is 43mm — right at the edge of the corrected circle, expect slight corner softening.
+Lands dead center of the 145.55–146.55mm tolerance window. The OAG-L (17.5mm) was removed from the train; the 15mm Baader extension tube plus 2.5mm of additional fine-adjustment rings (4.0mm of rings in total) fill the space it occupied, so the total is unchanged. The tube and rings are positional only - they can be rearranged in the stack as long as the sum holds. Twelve rings are on hand (four each of 0.3 / 0.5 / 1.0mm); 3.2mm of rings are spare for fine trim once the physical stack is assembled. Full-frame note: EdgeHD's corrected flat field is ⌀42mm; the ASI6200's sensor diagonal is 43mm — right at the edge of the corrected circle, expect slight corner softening.
 
 ## 2. Optical Tube
 
@@ -89,6 +94,9 @@ Aplanatic Schmidt-Cassegrain, no external corrector needed (correction built int
 
 **Condition:** used unit — **ordered 2026-07-30**, resolving the prior test-confirmation question.
 
+#### Astro-Tech AT72ED Guide Scope
+Used 72mm f/6 ED doublet refractor, ~5lb, riding on the C11 as the guide scope in place of the removed off-axis guider. Focused by the ZWO EAF-N (see [Section 5](#5-camera-filters--guiding)); carries the ASI220MM guide camera. Mounted to the C11 with the ADM V-series dovetail bars (see [Section 3](#3-mount)). Because guiding is now on a separate tube, the C11's mirror is locked by the ESATTO to avoid flop, and any flexure between the guide scope and the C11 is the remaining thing to watch.
+
 ## 3. Mount
 
 #### ZWO AM7 Harmonic Drive EQ Head
@@ -103,7 +111,10 @@ Aplanatic Schmidt-Cassegrain, no external corrector needed (correction built int
 Site-provided.
 
 #### William Optics Mini Vixen Mounting Base
-Small dovetail/shoe base, clamps to 3.5"+ diameter tubes or flat surfaces. **Confirmed use (2026-07-30): mounts the Pegasus Powerbox to the OTA's rail.**
+Small dovetail/shoe base, clamps to 3.5"+ diameter tubes or flat surfaces. **Confirmed use (2026-07-30): mounts the Pegasus Powerbox to the OTA's rail.** See [Powerbox Mounting Hardware](#powerbox-mounting-hardware-baader-finder-base-pegasus-shoe).
+
+#### ADM V-Series Dovetail Bars
+Two bars: an ADM V-series dovetail bar for the Celestron 11" SCT, and an ADM V-series to V-series dovetail bar that attaches the AT72ED guide scope to the C11.
 
 ## 4. Focuser & Adapters
 
@@ -124,10 +135,13 @@ ESATTO 2" → 3.3" SC thread, 2mm thick. Large-thread variant for 11"/14" EdgeHD
 4mm thick. Mates ESATTO's native M56 output to the EFW's M54 input.
 
 #### ZWO CAA Camera Angle Adjuster (rotator)
-Motorized field rotator, added 2026-07-30 for camera framing - sits downstream of the OAG (see [Section 1](#1-backfocus-stack-telescope-thread-to-sensor)), so it rotates the main camera's framing independently of the guide setup. Guide-star positioning is handled separately, by the OAG-L's own adjustable pickoff prism. M54 both sides (M48 adapter included), 16.5mm thick, 465g, rated for up to 11lb of downstream camera+accessories (this train's EFW+OAG+camera is ~1.5kg/3.3lb - comfortable margin). USB-C control, 0.02°/step.
+Motorized field rotator, added 2026-07-30 for camera framing - sits downstream of the filter wheel (see [Section 1](#1-backfocus-stack-telescope-thread-to-sensor)), so it rotates the main camera's framing independently of the guide setup. Guiding is on the separate AT72ED guide scope, so rotating the main camera does not affect the guide setup. M54 both sides (M48 adapter included), 16.5mm thick, 465g, rated for up to 11lb of downstream camera+accessories (this train's EFW + camera + extension tube is comfortably inside that). USB-C control, 0.02°/step.
+
+#### Baader M54 Extension Tube, 15mm
+Takes the place of the removed OAG-L in the backfocus stack (see [Section 1](#1-backfocus-stack-telescope-thread-to-sensor)); 15.0mm.
 
 #### M54 Backfocus Spacer Set (Baader)
-Two sets of Baader M54 fine-adjustment rings (0.3/0.5/1.0mm aluminium, six rings total) - **only 1.5mm needed now** (one 1.0mm + one 0.5mm ring) since the CAA rotator above replaces the originally-planned 15mm Baader extension tube in the stack. See [Section 1](#1-backfocus-stack-telescope-thread-to-sensor) for the full math.
+Four sets of Baader M54 fine-adjustment rings (0.3/0.5/1.0mm aluminium, twelve rings total). **4.0mm of rings are used** (three 1.0mm + two 0.5mm), which together with the 15mm extension tube above fills the space left by the OAG-L; 3.2mm of rings remain spare for trim. See [Section 1](#1-backfocus-stack-telescope-thread-to-sensor) for the full math.
 
 ## 5. Camera, Filters & Guiding
 
@@ -146,11 +160,11 @@ Two sets of Baader M54 fine-adjustment rings (0.3/0.5/1.0mm aluminium, six rings
 #### Antlia 3nm Narrowband and LRGB Filter Set
 2" mounted, Pro version. L, R, G, B, Hα, OIII, SII
 
-#### ZWO OAG-L Off-Axis Guider
-Bolts to EFW, contributes 17.5mm
-
 #### ZWO ASI220MM Mini Guide Camera
-Mounts in OAG-L helical focuser
+Mounts on the AT72ED guide scope (the off-axis guider was removed).
+
+#### ZWO EAF-N Electronic Automatic Focuser
+Electronic automatic focuser with USB Type-C. Drives the AT72ED guide scope's focuser.
 
 #### ZWO 12V 5A AC/DC Adapter (x2)
 **Confirmed use (2026-07-30):** one each for the ASI6200MM Pro and the AM7 mount, running both directly off dedicated AC power rather than the Powerbox's shared rail - isolates the two most brownout-sensitive loads from any voltage sag caused by the flat panel or dew heater cycling.
@@ -166,6 +180,9 @@ Mounts in OAG-L helical focuser
 
 #### Pegasus 12V 10A Power Supply
 2.1mm barrel — powers the Powerbox Micro above.
+
+#### Powerbox Mounting Hardware (Baader finder base, Pegasus shoe)
+Baader standard dovetail finder base plus the Pegasus mounting shoe (fits the Powerbox Micro / Advance and Dewmaster v2), used together to mount the Powerbox on the OTA, via the Mini Vixen base above.
 
 #### Deep Sky Dad C11 Aluminium Dewshield and OFP2 Flat Panel
 - Illuminated ⌀: 305mm
@@ -190,12 +207,13 @@ Dual filtered fans (one pulls air out, one pushes in) for the rear cell - speeds
 
 N.I.N.A. · ASCOM Platform · PHD2 · ASTAP + H18 · Pegasus Unity · PrimaLuceLab ESATTO driver
 
-**USB planning note:** the Powerbox Micro has exactly one USB port (control/monitoring of itself only - no hub function for other devices). Six separate connections need to reach the mini-PC: main camera, mount, ESATTO (or WiFi instead), flat panel, the Powerbox itself, and the CAA rotator (USB-C only, no WiFi option). The guide camera and filter wheel don't need their own ports - they chain through the main camera's built-in hub. Plan for a powered USB hub at the mini-PC with real spare capacity.
+**USB planning note:** the Powerbox Micro has exactly one USB port (control/monitoring of itself only - no hub function for other devices). Seven separate connections need to reach the mini-PC: main camera, mount, ESATTO (or WiFi instead), flat panel, the Powerbox itself, the CAA rotator (USB-C only, no WiFi option), and the ZWO EAF-N (USB-C). The guide camera and filter wheel don't need their own ports - they chain through the main camera's built-in hub. Plan for a powered USB hub at the mini-PC with real spare capacity.
 
 ## Open Items for the Observatory
 
 1. **AM7 base bolt pattern** — not published anywhere by ZWO. Need it measured directly off the physical mount (or pulled from ZWO's manual) before the pier top plate can be finalized.
-2. **AM7 capacity with the lighter 11lb counterweight** — the 66lb rated-capacity figure was based on a 22lb CW; the real order uses an 11lb Sky-Watcher CW instead. Real train weight (~23kg/~50lb) has margin either way, but worth confirming the actual capacity-with-this-CW number.
+2. **AM7 capacity with the lighter 11lb counterweight** — the 66lb rated-capacity figure was based on a 22lb CW; the real order uses an 11lb Sky-Watcher CW instead. Real train weight (~23kg/~50lb, before the guide scope) has margin either way, but worth confirming the actual capacity-with-this-CW number.
+3. **Train weight with the guide scope** — the ~23kg estimate predates the AT72ED (~5lb), the EAF-N, the guide camera and the extra dovetail bars. Re-estimate the total and re-check it against the AM7's rated capacity with the 11lb counterweight.
 
 ---
-*Second-scope build — full history in scope.md. Compiled 2026-07-30.*
+*Second-scope build — full history in scope.md. Compiled 2026-07-30; updated 2026-10-28.*
